@@ -1,7 +1,6 @@
 package com.example.eighthapplication
 
 import android.app.AlarmManager
-import android.app.DatePickerDialog
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -15,7 +14,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
 
-class MainActivity : AppCompatActivity(), TimeAlertDialog.Listener,
+class MainActivity : AppCompatActivity(),
     DatePickerFragment.OnDateSelectedListener,
     TimeBeginPickerFragment.OnTimeBeginSelectedListener,
     TimeFinishPickerFragment.OnTimeFinishSelectedListener {
@@ -48,10 +47,6 @@ class MainActivity : AppCompatActivity(), TimeAlertDialog.Listener,
             putInt("hourOfDay", hourOfDay)
             putInt("minute", minute)
         }
-    }
-
-    override fun cancelAlarm() {
-        cancelAlarmManager()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -116,12 +111,5 @@ class MainActivity : AppCompatActivity(), TimeAlertDialog.Listener,
                 am.set(AlarmManager.RTC_WAKEUP, scheduledTime.timeInMillis, pending)
             }
         }
-    }
-
-    private fun cancelAlarmManager() {
-        val am = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val intent = Intent(this, BroadcastReceiver::class.java)
-        val pending = PendingIntent.getBroadcast(this, 0, intent, 0)
-        am.cancel(pending)
     }
 }
