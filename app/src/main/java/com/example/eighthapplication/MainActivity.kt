@@ -13,7 +13,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
 
-//class MainActivity : AppCompatActivity() {
 class MainActivity : AppCompatActivity(), TimeAlertDialog.Listener {
 
     override fun cancelAlarm() {
@@ -30,9 +29,6 @@ class MainActivity : AppCompatActivity(), TimeAlertDialog.Listener {
         }
 
         val c = Calendar.getInstance()
-        val year = c.get(Calendar.YEAR)
-        val month = c.get(Calendar.MONTH)
-        val date = c.get(Calendar.DATE)
         val hour = c.get(Calendar.HOUR_OF_DAY)
         val minute = c.get(Calendar.MINUTE)
 
@@ -40,9 +36,12 @@ class MainActivity : AppCompatActivity(), TimeAlertDialog.Listener {
         time_begin.text = "%1$02d:%2$02d".format(9, 30)
         time_finish.text = "%1$02d:%2$02d".format(hour, minute)
 
-        c.timeInMillis = System.currentTimeMillis()
-        // 1830
-        c.set(year, month, date, hour, minute, 0)
+        c.apply {
+            timeInMillis = System.currentTimeMillis()
+            set(Calendar.HOUR_OF_DAY, 18)
+            set(Calendar.MINUTE, 30)
+        }
+
         setAlarmManager(c)
     }
 
@@ -51,12 +50,13 @@ class MainActivity : AppCompatActivity(), TimeAlertDialog.Listener {
         val intent = Intent(this, BroadcastReceiver::class.java)
         val pending = PendingIntent.getBroadcast(this, 0, intent, 0)
         when {
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP -> {
-                val info = AlarmManager.AlarmClockInfo(scheduledTime.timeInMillis, null)
-                am.setAlarmClock(info, pending)
-            }
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> {
-                am.setExact(AlarmManager.RTC_WAKEUP, scheduledTime.timeInMillis, pending)
+                am.setInexactRepeating(
+                    AlarmManager.RTC_WAKEUP,
+                    scheduledTime.timeInMillis,
+                    AlarmManager.INTERVAL_DAY,
+                    pending
+                )
             }
             else -> {
                 am.set(AlarmManager.RTC_WAKEUP, scheduledTime.timeInMillis, pending)
