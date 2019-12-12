@@ -1,6 +1,7 @@
 package com.example.eighthapplication
 
 import android.app.AlarmManager
+import android.app.DatePickerDialog
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -9,11 +10,45 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.format.DateFormat
 import android.widget.Toast
+import androidx.core.content.edit
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
 
-class MainActivity : AppCompatActivity(), TimeAlertDialog.Listener {
+class MainActivity : AppCompatActivity(), TimeAlertDialog.Listener,
+    DatePickerFragment.OnDateSelectedListener,
+    TimeBeginPickerFragment.OnTimeBeginSelectedListener,
+    TimeFinishPickerFragment.OnTimeFinishSelectedListener {
+
+    override fun onDateSelected(year: Int, month: Int, date: Int) {
+        val c = Calendar.getInstance()
+        c.set(year, month, date)
+        date_begin.text = DateFormat.format("yyyy/MM/dd", c)
+        val pref = getSharedPreferences("date_begin", Context.MODE_PRIVATE)
+        pref.edit {
+            putInt("year", year)
+            putInt("month", month)
+            putInt("date", date)
+        }
+    }
+
+    override fun onTimeBeginSelected(hourOfDay: Int, minute: Int) {
+        time_begin.text = "%1$02d:%2$02d".format(hourOfDay, minute)
+        val pref = getSharedPreferences("time_begin", Context.MODE_PRIVATE)
+        pref.edit {
+            putInt("hourOfDay", hourOfDay)
+            putInt("minute", minute)
+        }
+    }
+
+    override fun onTimeFinishSelected(hourOfDay: Int, minute: Int) {
+        time_finish.text = "%1$02d:%2$02d".format(hourOfDay, minute)
+        val pref = getSharedPreferences("time_finish", Context.MODE_PRIVATE)
+        pref.edit {
+            putInt("hourOfDay", hourOfDay)
+            putInt("minute", minute)
+        }
+    }
 
     override fun cancelAlarm() {
         cancelAlarmManager()
@@ -22,6 +57,25 @@ class MainActivity : AppCompatActivity(), TimeAlertDialog.Listener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        date_begin.setOnClickListener {
+            val dialog = DatePickerFragment()
+            dialog.show(supportFragmentManager, "date_dialog")
+        }
+
+        time_begin.setOnClickListener {
+            val dialog = TimeBeginPickerFragment()
+            dialog.show(supportFragmentManager, "time_begin_dialog")
+        }
+
+        time_finish.setOnClickListener {
+            val dialog = TimeFinishPickerFragment()
+            dialog.show(supportFragmentManager, "time_finish_dialog")
+        }
+
+        saveButton.setOnClickListener {
+            Toast.makeText(this, "共有プリファレンスにデータを保存しました。", Toast.LENGTH_SHORT).show()
+        }
 
         if (intent?.getBooleanExtra("onReceive", false) == true) {
             val dialog = TimeAlertDialog()
@@ -41,7 +95,6 @@ class MainActivity : AppCompatActivity(), TimeAlertDialog.Listener {
             set(Calendar.HOUR_OF_DAY, 18)
             set(Calendar.MINUTE, 30)
         }
-
         setAlarmManager(c)
     }
 
