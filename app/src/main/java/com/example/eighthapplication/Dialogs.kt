@@ -24,10 +24,6 @@ class TimeAlertDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder = AlertDialog.Builder(requireActivity())
         builder.setMessage("退勤時間になりました。" + "\n" + "今日の勤務時間を保存しましょう。")
-            .setOnDismissListener { dialog ->
-                dialog.dismiss()
-                listener?.cancelAlarm()
-            }
         return builder.create()
     }
 }

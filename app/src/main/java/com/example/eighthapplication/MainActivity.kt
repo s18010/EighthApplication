@@ -51,7 +51,8 @@ class MainActivity : AppCompatActivity(), TimeAlertDialog.Listener {
         val pending = PendingIntent.getBroadcast(this, 0, intent, 0)
         when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> {
-                am.setInexactRepeating(
+//                am.setInexactRepeating(
+                am.setRepeating(
                     AlarmManager.RTC_WAKEUP,
                     scheduledTime.timeInMillis,
                     AlarmManager.INTERVAL_DAY,
