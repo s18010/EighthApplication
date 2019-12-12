@@ -23,4 +23,5 @@
         </activity>
     </application>
 
+    <uses-sdk android:minSdkVersion="17" />
 </manifest>
