@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">EighthApplication</string>
+    <string name="app_name">WorkingTime</string>
     <string name="begin_text">出勤時間</string>
     <string name="finish_text">退勤時間</string>
     <string name="saveButton">保存</string>
