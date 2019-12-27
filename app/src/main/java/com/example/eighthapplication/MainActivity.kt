@@ -23,30 +23,14 @@ class MainActivity : AppCompatActivity(),
         val c = Calendar.getInstance()
         c.set(year, month, date)
         date_begin.text = DateFormat.format("yyyy/MM/dd", c)
-        val pref = getSharedPreferences("date_begin", Context.MODE_PRIVATE)
-        pref.edit {
-            putInt("year", year)
-            putInt("month", month)
-            putInt("date", date)
-        }
     }
 
     override fun onTimeBeginSelected(hourOfDay: Int, minute: Int) {
         time_begin.text = "%1$02d:%2$02d".format(hourOfDay, minute)
-        val pref = getSharedPreferences("time_begin", Context.MODE_PRIVATE)
-        pref.edit {
-            putInt("hourOfDay", hourOfDay)
-            putInt("minute", minute)
-        }
     }
 
     override fun onTimeFinishSelected(hourOfDay: Int, minute: Int) {
         time_finish.text = "%1$02d:%2$02d".format(hourOfDay, minute)
-        val pref = getSharedPreferences("time_finish", Context.MODE_PRIVATE)
-        pref.edit {
-            putInt("hourOfDay", hourOfDay)
-            putInt("minute", minute)
-        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -88,7 +72,15 @@ class MainActivity : AppCompatActivity(),
         }
 
         saveButton.setOnClickListener {
-            Toast.makeText(this, "共有プリファレンスにデータを保存しました。", Toast.LENGTH_SHORT).show()
+            val pref = getSharedPreferences("workTime", Context.MODE_PRIVATE)
+            pref.edit {
+                putString("date_begin", date_begin.text.toString())
+                putString("time_begin", time_begin.text.toString())
+                putString("time_finish", time_finish.text.toString())
+            }
+
+            val workTime = pref.getString("date_begin", "_")
+            Toast.makeText(this, workTime + "の勤務時間を保存しました。", Toast.LENGTH_SHORT).show()
         }
 
         if (intent?.getBooleanExtra("onReceive", false) == true) {
