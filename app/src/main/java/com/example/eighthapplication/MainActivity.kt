@@ -53,6 +53,25 @@ class MainActivity : AppCompatActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val c = Calendar.getInstance()
+        val beginTime = Calendar.getInstance()
+        beginTime.apply {
+            timeInMillis = System.currentTimeMillis()
+            set(Calendar.HOUR_OF_DAY, 9)
+            set(Calendar.MINUTE, 30)
+        }
+
+        date_begin.text = DateFormat.format("yyyy/MM/dd", c)
+        time_begin.text = DateFormat.format("HH:mm", beginTime)
+        time_finish.text = DateFormat.format("HH:mm", c)
+
+        c.apply {
+            timeInMillis = System.currentTimeMillis()
+            set(Calendar.HOUR_OF_DAY, 18)
+            set(Calendar.MINUTE, 30)
+        }
+        setAlarmManager(c)
+
         date_begin.setOnClickListener {
             val dialog = DatePickerFragment()
             dialog.show(supportFragmentManager, "date_dialog")
@@ -76,21 +95,6 @@ class MainActivity : AppCompatActivity(),
             val dialog = TimeAlertDialog()
             dialog.show(supportFragmentManager, "alert_dialog")
         }
-
-        val c = Calendar.getInstance()
-        val hour = c.get(Calendar.HOUR_OF_DAY)
-        val minute = c.get(Calendar.MINUTE)
-
-        date_begin.text = DateFormat.format("yyyy/MM/dd", c)
-        time_begin.text = "%1$02d:%2$02d".format(9, 30)
-        time_finish.text = "%1$02d:%2$02d".format(hour, minute)
-
-        c.apply {
-            timeInMillis = System.currentTimeMillis()
-            set(Calendar.HOUR_OF_DAY, 18)
-            set(Calendar.MINUTE, 30)
-        }
-        setAlarmManager(c)
     }
 
     private fun setAlarmManager(scheduledTime: Calendar) {
